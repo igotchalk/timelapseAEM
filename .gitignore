@@ -4,4 +4,4 @@
 *.sublime-workspace
 
 
-notebook/.ipynb_checkpoints/*
+notebook/.ipynb_checkpoints/*.ipynb

@@ -1,4 +1,7 @@
-# packages #
-notebook/simpegskytem/
+*.py[cod]
+*.checkpoint.ipynb
+*.sublime-project
+*.sublime-workspace
 
 
+notebook/.ipynb_checkpoints/*

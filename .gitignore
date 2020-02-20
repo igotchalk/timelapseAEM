@@ -2,7 +2,9 @@
 *.checkpoint.ipynb
 *.sublime-project
 *.sublime-workspace
+*.res
 
-
+data/raw_data/
 notebook/.ipynb_checkpoints/*.ipynb
+notebook/simpegskytem/
 .DS_Store

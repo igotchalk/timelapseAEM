@@ -3,6 +3,7 @@
 *.sublime-project
 *.sublime-workspace
 *.res
+*.icloud
 
 data/raw_data/
 notebook/.ipynb_checkpoints/*.ipynb

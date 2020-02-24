@@ -1,0 +1,19 @@
+name: simpegEM1D-environment
+
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - pip
+  - jupyter
+  - ipython
+  - numpy
+  - scipy
+  - matplotlib
+  - mkl
+  - discretize
+  - pandas
+  # - gcc
+  - pip:
+    - git+https://github.com/simpeg/simpegEM1D.git@master
+

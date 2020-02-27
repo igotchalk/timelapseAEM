@@ -24,22 +24,23 @@ import fileinput
 it = int(sys.argv[1])
 # In[2]:
 
-#stds =  (.05,.05,.03,.05,.05)
-#s = (1e-2, 1., 1e-2, 1., 1e-2)
-#x = (10.,  10.,10.,  10.,1.)
-#y = (1.,   1., 1.,   1., 1.)  
-#m0_vals =(10.,  10.,10.,  20.,10.)
-
 stds =  (.05,.05)
-s = (1e-2,1e-2)
-x = (1.,10.)
-y = (1.,1.)
-m0_vals =(10.,10.)
-
-
+s = ( 1.,1)
+x = (10.,1.)
+y = (1., 1.)  
+m0_vals =( 10.,10.)
+shift = 0
 
 std,alpha_s,alpha_x,alpha_y,m0_val = (stds[it],s[it],x[it],y[it],m0_vals[it])
 
+output_dir = Path("/scratch/users/ianpg/timelapseAEM/2017-line{line}-sep{sep}-std{std}-s{alpha_s}x{alpha_x}y{alpha_y}m{m0_val}/"
+                  .format(line=line[0],
+                          sep=shift,
+                          std=std,
+                          alpha_s=int(100*alpha_s),
+                          alpha_x=int(100*alpha_x),
+                          alpha_y=int(100*alpha_y),
+                          m0_val=int(m0_val)))
 
 # In[3]:
 
@@ -60,7 +61,7 @@ df = pd.read_pickle(datadir.joinpath('processed_df_1719.pkl'))
 
 # In[6]:
 
-
+df = df.loc[df.syktem_type==304,:]
 line = [l for l in df.LINE_NO.unique()]
 # line = (100501,)
 # line = (206800,206801)
@@ -112,7 +113,7 @@ msk_312 = system==312
 
 
 #Shift the 312 system spatially to create the "temporal" constraint
-shift = 0
+#shift = 0
 xy[msk_312] = xy[msk_312]+shift/np.sqrt(2)
 rx_locations = np.c_[xy[:,:], height+dem+2.]
 src_locations = np.c_[xy[:,:], height+dem]
@@ -423,7 +424,7 @@ survey = GlobalEM1DSurveyTD(
 )
 
 prob = GlobalEM1DProblemTD(
-    [], sigmaMap=mapping, hz=hz, parallel=True, n_cpu=10,
+    [], sigmaMap=mapping, hz=hz, parallel=True, n_cpu=6,
     Solver=PardisoSolver
 )
 prob.pair(survey)
@@ -509,14 +510,6 @@ print('uncert size',uncert.size)
 # ### Run the inversion 
 
 print('alpha_s',alpha_s,'\n','alpha_x',alpha_x,'\n','alpha_y',alpha_y,'\n','m0_val',m0_val,'\n')
-output_dir = Path("/scratch/users/ianpg/timelapseAEM/line{line}-sep{sep}-std{std}-s{alpha_s}x{alpha_x}y{alpha_y}m{m0_val}/"
-                  .format(line=line[0],
-                          sep=shift,
-                          std=std,
-                          alpha_s=int(100*alpha_s),
-                          alpha_x=int(100*alpha_x),
-                          alpha_y=int(100*alpha_y),
-                          m0_val=int(m0_val)))
 print('ouput dir: {}'.format(output_dir))
 mesh = get_2d_mesh(n_sounding, hz)
 m0 = np.ones(mesh.nC) * np.log(1/m0_val)
@@ -535,7 +528,7 @@ np.random.seed(1)
 dmisfit = DataMisfit.l2_DataMisfit(survey)
 dmisfit.W = 1./uncert
 
-opt = Optimization.ProjectedGNCG(maxIter = 10, maxIterCG=20)
+opt = Optimization.ProjectedGNCG(maxIter = 15, maxIterCG=20)
 # opt.upper = m_upper
 # opt.lower = m_lower
 invProb = InvProblem.BaseInvProblem(dmisfit, reg, opt)

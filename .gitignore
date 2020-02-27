@@ -8,4 +8,5 @@
 data/raw_data/
 notebook/.ipynb_checkpoints/*.ipynb
 notebook/simpegskytem/
+notebook/output/
 .DS_Store
